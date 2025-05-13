@@ -5,7 +5,7 @@
 clear
 d=2;
 m=3;
-N=160*10000;
+N=100*0000;
 Xn=rand(d,N);   % Sampling point set
 h=1/(N^(1/d)); % The estimation of fill distance
 delta0=2*m*h;
@@ -18,16 +18,20 @@ end
 %%
 % Main
 % Building G-Octree
+tic
 C0=[zeros(d,1),ones(d,1)];
 GOctree=MyOctree(Xn,C0,delta0);
+t1=toc    %the tree-building time
 %
 % Neighborhood search
 x=rand(d,1);
-%delta=delta0*(0.5+rand(1,1));   % The radius of search, delta, is a random number between 0.5*delta0 and 1.5*delta0
-delta=8*delta0;
+delta=delta0*(0.5+rand(1,1));    % The radius of search, delta, is a random number between 0.5*delta0 and 1.5*delta0
+tic
 Ix=GOctree.RangeSearch(x,delta); % The index set of pionts in the intersection intersection of Xn and B(x,delta)
+t2=toc                           %Single neighborhood search time
 %%
 % MLS approximation at x
+tic
 [Alpha,Q] = PolyAlpha(d,m);
 Nx=length(Ix);
 W=zeros(Nx,1);
@@ -40,7 +44,7 @@ Wx=diag(sqrt(W));
 c=SbySVD(Wx*P,Wx*Fs(Ix));
 fp=PnByAlpha(x,Alpha)*c;
 Error=abs(fp-f(x)); %Approximation error at x
-
+t3=toc             % Single MLS approximation time
 %%
 % Auxiliary functions
 function [A,Q] = PolyAlpha(d,m)
