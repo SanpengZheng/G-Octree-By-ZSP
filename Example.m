@@ -5,7 +5,7 @@
 clear
 d=2;
 m=3;
-N=100*0000;
+N=160*10000;
 Xn=rand(d,N);   % Sampling point set
 h=1/(N^(1/d)); % The estimation of fill distance
 delta0=2*m*h;
